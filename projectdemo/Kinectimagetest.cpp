@@ -33,7 +33,6 @@ int main(int argc, char** argv)
 	cv::namedWindow("fusion");
 	char key = 0;
 
-	//¡¾1¡¿
 	// initialize OpenNI2
 	result = OpenNI::initialize();
 	CheckOpenNIError(result, "initialize context");
@@ -42,12 +41,10 @@ int main(int argc, char** argv)
 	Device device;
 	result = device.open(openni::ANY_DEVICE);
 
-	//¡¾2¡¿
 	// create depth stream 
 	VideoStream oniDepthStream;
 	result = oniDepthStream.create(device, openni::SENSOR_DEPTH);
 
-	//¡¾3¡¿
 	// set depth video mode
 	VideoMode modeDepth;
 	modeDepth.setResolution(640, 480);
@@ -67,7 +64,6 @@ int main(int argc, char** argv)
 	modeColor.setPixelFormat(PIXEL_FORMAT_RGB888);
 	oniColorStream.setVideoMode(modeColor);
 
-	//¡¾4¡¿
 	// set depth and color imge registration mode
 	if (device.isImageRegistrationModeSupported(IMAGE_REGISTRATION_DEPTH_TO_COLOR))
 	{
@@ -91,12 +87,12 @@ int main(int argc, char** argv)
 		{
 			cv::Mat cvRawImg16U(oniDepthImg.getHeight(), oniDepthImg.getWidth(), CV_16UC1, (void*)oniDepthImg.getData());
 			cvRawImg16U.convertTo(cvDepthImg, CV_8U, 255.0 / (oniDepthStream.getMaxPixelValue()));
-			//¡¾5¡¿
+			//Ä„Å¾5Ä„Å¼
 			// convert depth image GRAY to BGR
 			cv::cvtColor(cvDepthImg, cvFusionImg, CV_GRAY2BGR);
 			cv::imshow("depth", cvDepthImg);
 		}
-		//¡¾6¡¿
+
 		cv::addWeighted(cvBGRImg, 0.5, cvFusionImg, 0.5, 0, cvFusionImg);
 		cv::imshow("fusion", cvFusionImg);
 		key = cv::waitKey(20);
